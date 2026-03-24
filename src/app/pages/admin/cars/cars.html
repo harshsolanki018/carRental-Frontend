@@ -1,0 +1,372 @@
+<h2 class="text-2xl font-semibold mb-6">
+  Manage Cars
+</h2>
+
+
+<!-- ADD BUTTON -->
+<div class="flex justify-end mb-4">
+  <button
+    (click)="openAddModal()"
+    class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700"
+  >
+    + Add New Car
+  </button>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="mb-6">
+  <label for="adminCarsSearch" class="sr-only">
+    Search cars
+  </label>
+  <input
+    id="adminCarsSearch"
+    type="text"
+    [(ngModel)]="searchText"
+    autocomplete="off"
+    placeholder="Search by Car ID, Car Number or Name..."
+    class="w-full md:w-96 border rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+
+<!-- TABLE -->
+<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+
+  <table class="w-full border-collapse text-sm">
+    <thead class="bg-gray-50 border-b">
+      <tr>
+        <th class="px-6 py-4 text-left font-medium text-gray-600 w-[10%]">
+          Car ID
+        </th>
+
+        <th class="px-6 py-4 text-left font-medium text-gray-600 w-[18%]">
+          Car Number
+        </th>
+
+        <th class="px-6 py-4 text-left font-medium text-gray-600 w-[22%]">
+          Car Name
+        </th>
+
+        <th class="px-6 py-4 text-left font-medium text-gray-600 w-[12%]">
+          Price / Day
+        </th>
+
+        <th class="px-6 py-4 text-center font-medium text-gray-600 w-[13%]">
+          Status
+        </th>
+
+        <th class="px-6 py-4 text-right font-medium text-gray-600 w-[25%]">
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let car of filteredCars"
+        class="border-b hover:bg-gray-50"
+      >
+        <!-- CAR ID -->
+         <td class="px-6 py-4 font-mono text-sm text-gray-600">
+          {{ car.id }}  
+        </td>
+
+        <!-- CAR NUMBER -->
+        <td class="px-6 py-4">
+          {{ car.carNumber }}
+        </td>
+
+        <!-- NAME -->
+        <td class="px-6 py-4">
+          {{ car.name }}
+        </td>
+
+        <!-- PRICE -->
+        <td class="px-6 py-4">
+          ₹{{ car.pricePerDay }}
+        </td>
+
+        <!-- STATUS -->
+        <td class="px-6 py-4 text-center">
+          <span
+            class="px-3 py-1 text-xs rounded-full"
+            [ngClass]="{
+              'bg-green-100 text-green-700': car.status === 'Available',
+              'bg-yellow-100 text-yellow-700': car.status === 'Maintenance',
+              'bg-red-100 text-red-700': car.status === 'Booked'
+            }"
+          >
+            {{ car.status }}
+          </span>
+        </td>
+
+        <!-- ACTIONS -->
+        <td class="px-6 py-4 text-right space-x-2">
+          <button
+          (click)="editCarById(car.id)"
+          class="px-3 py-1 text-xs bg-gray-700 text-white rounded hover:bg-gray-800"
+          >
+           Edit
+          </button>
+            <button
+            (click)="setMaintenance(car)"
+            class="px-3 py-1 text-xs rounded text-white"
+            [ngClass]="
+              car.status === 'Maintenance'
+                ? 'bg-green-600 hover:bg-green-700'
+                : 'bg-yellow-600 hover:bg-yellow-700'
+            "
+          >
+            {{ car.status === 'Maintenance' ? 'Set Available' : 'Maintenance' }}
+          </button>
+
+
+          <button
+            (click)="safeDelete(car)"
+            class="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </td>
+       
+      </tr>
+    </tbody>
+  </table>
+  <!-- ADD CAR MODAL -->
+<div
+  *ngIf="showAddModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+>
+  <form
+    #carForm="ngForm"
+    (ngSubmit)="saveCar(carForm)"
+
+    class="bg-white w-full max-w-2xl rounded-xl p-6 overflow-y-auto max-h-[90vh]"
+  >
+
+<h3 class="text-xl font-semibold">
+  {{ isEditMode ? 'Edit Car' : 'Add New Car' }}
+</h3>
+
+
+    <!-- OWNER DETAILS -->
+    <h4 class="font-medium mb-3"> <fa-icon [icon]="faUser"></fa-icon> Owner Details</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+
+      <label for="adminCarOwnerName" class="sr-only">Owner Name</label>
+      <input
+        id="adminCarOwnerName"
+        type="text"
+        name="ownerName"
+        [(ngModel)]="newCar.ownerName"
+        autocomplete="name"
+        required
+        placeholder="Owner Name"
+        class="border rounded-md px-3 py-2 text-sm"
+      />
+
+      <label for="adminCarOwnerContact" class="sr-only">Owner Contact Number</label>
+      <input
+        id="adminCarOwnerContact"
+        type="tel"
+        name="ownerContact"
+        [(ngModel)]="newCar.ownerContact"
+        autocomplete="tel"
+        required
+        pattern="[0-9]{10}"
+        minlength="10"
+        maxlength="10"
+        inputmode="numeric"
+        placeholder="Contact Number"
+        class="border rounded-md px-3 py-2 text-sm"
+      />
+    </div>
+
+    <!-- CAR BASIC INFO -->
+    <h4 class="font-medium mb-3"> <fa-icon [icon]="faCar"></fa-icon> Car Basic Information</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+
+      <label for="adminCarName" class="sr-only">Car Name</label>
+      <input
+        id="adminCarName"
+        type="text"
+        name="carName"
+        [(ngModel)]="newCar.name"
+        autocomplete="off"
+        required
+        placeholder="Car Name"
+        class="border rounded-md px-3 py-2 text-sm"
+      />
+
+      <label for="adminCarNumber" class="sr-only">Registration Number</label>
+      <input
+        id="adminCarNumber"
+        type="text"
+        name="carNumber"
+        [(ngModel)]="newCar.carNumber"
+        autocomplete="off"
+        required
+        placeholder="Registration Number"
+        class="border rounded-md px-3 py-2 text-sm"
+      />
+
+   <!-- CUSTOM IMAGE UPLOAD -->
+      <div class="border-2 border-dashed rounded-xl p-5 text-center relative">
+
+        <label for="adminCarImage" class="sr-only">Upload car image</label>
+        <input
+          id="adminCarImage"
+          type="file"
+          accept="image/*"
+          autocomplete="off"
+          (change)="onImageSelect($event)"
+          [disabled]="isUploadingImage"
+          class="absolute inset-0 opacity-0 cursor-pointer"
+        />
+
+        <div *ngIf="!newCar.image && !pendingImagePreview">
+          <div class="text-3xl mb-2"><fa-icon [icon]="faImage"></fa-icon></div>
+          <p class="text-sm text-gray-600">
+            Click to choose car image
+          </p>
+          <p class="text-xs text-gray-400 mt-1">
+            JPG, PNG (max 5MB). Upload happens on save.
+          </p>
+        </div>
+
+        <img
+          *ngIf="pendingImagePreview; else existingImage"
+          [src]="pendingImagePreview"
+          appImgFallback="https://via.placeholder.com/400x300"
+          class="mx-auto h-32 rounded-lg object-cover"
+        />
+
+        <ng-template #existingImage>
+          <img
+            *ngIf="newCar.image"
+            [src]="newCar.image"
+            appImgFallback="https://via.placeholder.com/400x300"
+            class="mx-auto h-32 rounded-lg object-cover"
+          />
+        </ng-template>
+
+        <p *ngIf="pendingImagePreview" class="text-xs text-gray-500 mt-2">
+          Selected image will upload when you save.
+        </p>
+
+        <p *ngIf="isUploadingImage" class="text-xs text-blue-600 mt-2">
+          Uploading image...
+        </p>
+
+      </div>
+    </div>
+
+    <!-- LOCATION -->
+    <h4 class="font-medium mb-3"> <fa-icon [icon]="faMapPin"></fa-icon> Availability</h4>
+    <label for="adminCarLocation" class="sr-only">Car location</label>
+    <input
+      id="adminCarLocation"
+      type="text"
+      name="location"
+      [(ngModel)]="newCar.location"
+      autocomplete="off"
+      required
+      placeholder="City / Area"
+      class="border rounded-md px-3 py-2 text-sm w-full mb-6"
+    />
+
+    <!-- SPECIFICATIONS -->
+    <h4 class="font-medium mb-3"> <fa-icon [icon]="faGear"></fa-icon> Car Specifications</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+
+      <label for="adminCarFuelType" class="sr-only">Fuel type</label>
+      <select
+        id="adminCarFuelType"
+        name="fuelType"
+        [(ngModel)]="newCar.fuelType"
+        autocomplete="off"
+        required
+        class="border rounded-md px-3 py-2 text-sm"
+      >
+        <option>Petrol</option>
+        <option>Diesel</option>
+        <option>Electric</option>
+      </select>
+
+      <label for="adminCarTransmission" class="sr-only">Transmission</label>
+      <select
+        id="adminCarTransmission"
+        name="transmission"
+        [(ngModel)]="newCar.transmission"
+        autocomplete="off"
+        required
+        class="border rounded-md px-3 py-2 text-sm"
+      >
+        <option>Manual</option>
+        <option>Automatic</option>
+      </select>
+
+      <label for="adminCarSeats" class="sr-only">Number of seats</label>
+      <input
+        id="adminCarSeats"
+        type="number"
+        name="seats"
+        [(ngModel)]="newCar.seats"
+        autocomplete="off"
+        required
+        min="2"
+        placeholder="Seats"
+        class="border rounded-md px-3 py-2 text-sm"
+      />
+    </div>
+
+    <!-- PRICING -->
+    <h4 class="font-medium mb-3"> <fa-icon [icon]="faSackDollar"></fa-icon> Pricing</h4>
+    <label for="adminCarPricePerDay" class="sr-only">Price per day</label>
+    <input
+      id="adminCarPricePerDay"
+      type="number"
+      name="pricePerDay"
+      [(ngModel)]="newCar.pricePerDay"
+      autocomplete="off"
+      required
+      min="1"
+      placeholder="Price per day (₹)"
+      class="border rounded-md px-3 py-2 text-sm w-full mb-6"
+    />
+
+    <!-- DESCRIPTION -->
+    <h4 class="font-medium mb-3"> <fa-icon [icon]="faMessage"></fa-icon> Additional Details</h4>
+    <label for="adminCarDescription" class="sr-only">Car description</label>
+    <textarea
+      id="adminCarDescription"
+      name="description"
+      [(ngModel)]="newCar.description"
+      autocomplete="off"
+      required
+      rows="3"
+      placeholder="Car description"
+      class="border rounded-md px-3 py-2 text-sm w-full mb-6"
+    ></textarea>
+
+    <!-- ACTIONS -->
+    <div class="flex justify-end gap-3">
+      <button
+        type="button"
+       (click)="closeModal()"
+        class="px-4 py-2 border rounded-md text-sm"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit" 
+        [disabled]="isUploadingImage"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        Save Car
+      </button>
+    </div>
+
+  </form>
+</div>
+
+</div>

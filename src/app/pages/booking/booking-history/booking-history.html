@@ -1,0 +1,131 @@
+<section class="min-h-screen bg-background">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <!-- HEADER -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-primary">
+        My Rental History
+      </h1>
+      <p class="mt-2 text-muted text-sm">
+        Manage your bookings and track rental status.
+      </p>
+    </div>
+
+    <!-- EMPTY -->
+    <div
+      *ngIf="bookings.length === 0"
+      class="bg-white border rounded-xl p-8 text-center text-muted"
+    >
+      No bookings found.
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="space-y-6">
+      <div
+        *ngFor="let booking of bookings"
+        class="bg-white border rounded-xl p-6 shadow-sm hover:shadow-md transition"
+      >
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-center">
+          <!-- IMAGE -->
+          <div>
+            <img
+              [src]="booking.image || 'https://via.placeholder.com/300x200'"
+              appImgFallback="https://via.placeholder.com/300x200"
+              class="w-full h-28 object-cover rounded-lg"
+              alt="Car"
+            />
+          </div>
+
+          <!-- DETAILS -->
+          <div class="lg:col-span-2">
+            <h3 class="text-lg font-semibold text-primary">
+              {{ booking.carName }}
+            </h3>
+
+            <div class="mt-3 text-sm text-muted space-y-1">
+              <p class="text-xs text-gray-500 mt-1">
+                Booking ID:
+                <span class="font-mono font-medium">
+                  {{ booking.bookingId }}
+                </span>
+              </p>
+
+              <p>
+                Rental Period:
+                <span class="font-medium text-primary">
+                  {{ booking.pickupDate }} -> {{ booking.returnDate }}
+                </span>
+              </p>
+
+              <p>
+                Duration:
+                <span class="font-medium text-primary">
+                  {{ booking.totalDays }} days
+                </span>
+              </p>
+
+              <p class="font-semibold text-primary mt-2">
+                Total Amount: Rs. {{ booking.totalPrice }}
+              </p>
+
+              <p class="text-xs text-gray-500 mt-2">
+                Payment ID:
+                <span class="font-mono font-medium text-primary">
+                  {{ booking.paymentId || 'N/A' }}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="flex flex-col items-end gap-4">
+            <!-- STATUS -->
+            <span
+              class="text-xs px-4 py-2 rounded-full font-medium"
+              [ngClass]="{
+                'bg-amber-100 text-amber-700': booking.status === 'Confirmed',
+                'bg-indigo-100 text-indigo-700': booking.status === 'Active',
+                'bg-orange-100 text-orange-700': booking.status === 'Awaiting Return',
+                'bg-green-100 text-green-700': booking.status === 'Completed',
+                'bg-red-100 text-red-700': booking.status === 'Rejected'
+              }"
+            >
+              {{ booking.status }}
+            </span>
+
+            <!-- CANCEL -->
+            <button
+              *ngIf="booking.status === 'Confirmed' && booking.pickupDate > today && booking.paymentStatus !== 'Success'"
+              (click)="cancelBooking(booking)"
+              class="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+            >
+              Cancel Booking
+            </button>
+
+            <!-- RATING SECTION -->
+            <div class="flex items-center gap-3">
+              <div *ngIf="booking.status === 'Completed' && !booking.rating">
+                <span class="text-sm text-gray-500 mr-2">
+                  Rate your experience:
+                </span>
+
+                <button
+                  *ngFor="let star of [1,2,3,4,5]"
+                  (click)="rateBooking(booking, star)"
+                  class="text-yellow-400 text-lg hover:scale-110 transition"
+                >
+                  &#9733;
+                </button>
+              </div>
+
+              <div *ngIf="booking.status === 'Completed' && booking.rating">
+                <span class="text-yellow-500 font-medium">
+                  &#9733; {{ booking.rating }} / 5
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

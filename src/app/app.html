@@ -1,0 +1,8 @@
+<app-navbar *ngIf="!isAdminRoute"></app-navbar>
+<app-flash-message></app-flash-message>
+
+<main class="min-h-screen bg-background">
+  <router-outlet></router-outlet>
+</main>
+
+<app-footer *ngIf="!isAdminRoute"></app-footer>
