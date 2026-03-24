@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FlashMessageService } from '../../core/services/flash-message';
 import { CarsApiService } from '../../core/services/cars-api';
@@ -41,7 +41,8 @@ export class Booking implements OnInit {
     private flash: FlashMessageService,
     private carsApi: CarsApiService,
     private bookingsApi: BookingsApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -200,6 +201,7 @@ export class Booking implements OnInit {
             this.flash.showSuccess(verifyResponse.message || 'Booking confirmed.');
             this.resetForm();
             await this.loadBookedRanges();
+            this.router.navigateByUrl('/cars');
           } catch (error) {
             this.showError(this.getErrorMessage(error, 'Payment verification failed.'));
           } finally {
