@@ -139,11 +139,9 @@ Add screenshots of:
 
 ---
 
-## Authors
+## Author
 
 * Harsh Solanki
-* Het Prajapati
-* Yug Shah
 
 ---
 
