@@ -1,59 +1,152 @@
-# CarRentalFrontend
+# carRental Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+Angular frontend application for the carRental – Car Rental Management System.
 
-## Development server
+## Overview
 
-To start a local development server, run:
+The frontend provides a modern, responsive interface for users to browse cars, view details, book vehicles, manage bookings, and complete the rental process online. The application is built as a Single Page Application (SPA) using Angular and Tailwind CSS to ensure a fast, responsive, and user-friendly experience.
+
+---
+
+## Features
+
+### User Functionalities
+
+* User Registration
+* User Login & Authentication
+* Browse Available Cars
+* Search & Filter Cars
+* View Detailed Car Information
+* Check Vehicle Availability
+* Book Cars Online
+* View Booking History
+* Responsive User Interface
+* Secure Access Control
+
+---
+
+## Tech Stack
+
+| Technology     | Purpose                 |
+| -------------- | ----------------------- |
+| Angular        | Frontend Framework      |
+| TypeScript     | Application Development |
+| Tailwind CSS   | UI Styling              |
+| HTML5          | Structure               |
+| Angular Router | Navigation              |
+| RxJS           | Reactive Programming    |
+| HTTP Client    | API Communication       |
+
+---
+
+## Prerequisites
+
+* Node.js (LTS Recommended)
+* npm
+* Angular CLI
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/yourusername/car2go-frontend.git
+cd car2go-frontend
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Configure Environment
+
+Update:
+
+```text
+src/environments/environment.ts
+```
+
+Add your backend API URL.
+
+### Start Development Server
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
+## Project Structure
+
+```text
+src/
+│
+├── app/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── guards/
+│   ├── models/
+│   └── shared/
+│
+├── assets/
+├── environments/
+└── styles/
 ```
 
-## Building
+---
 
-To build the project run:
+## Available Scripts
 
-```bash
-ng build
-```
+| Command       | Description              |
+| ------------- | ------------------------ |
+| npm start     | Start Development Server |
+| npm run build | Create Production Build  |
+| npm test      | Run Unit Tests           |
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## Screenshots
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Add screenshots of:
 
-```bash
-ng test
-```
+* Home Page
+* Car Listing Page
+* Car Details Page
+* Booking Page
+* User Dashboard
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## Future Enhancements
 
-```bash
-ng e2e
-```
+* Online Payment Gateway Integration
+* Real-Time Availability Updates
+* Vehicle Reviews & Ratings
+* Mobile Application
+* Multi-Language Support
+* Progressive Web App (PWA)
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## Authors
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* Harsh Solanki
+* Het Prajapati
+* Yug Shah
+
+---
+
+## License
+
+This project is developed for educational and learning purposes.
